@@ -1,0 +1,53 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const posts = await getCollection("blog", ({ data }) => !data.draft);
+
+// أحدث المقالات أولاً
+posts.sort(
+  (a, b) =>
+    b.data.publishDate.getTime() - a.data.publishDate.getTime()
+);
+---
+
+<BaseLayout title="Blog">
+
+<div class="max-w-6xl mx-auto py-16">
+
+<h1 class="text-5xl font-bold mb-10">
+Blog
+</h1>
+
+<div class="grid gap-6">
+
+{
+posts.map((post) => (
+
+<a
+href={`/blog/${post.id}`}
+class="rounded-xl border p-6 hover:shadow-lg transition"
+>
+
+<h2 class="text-2xl font-semibold">
+{post.data.title}
+</h2>
+
+<p class="mt-2 text-gray-600">
+{post.data.description}
+</p>
+
+<div class="mt-4 text-sm text-gray-500">
+{post.data.publishDate.toLocaleDateString()}
+</div>
+
+</a>
+
+))
+}
+
+</div>
+
+</div>
+
+</BaseLayout>
